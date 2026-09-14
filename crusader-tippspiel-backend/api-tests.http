@@ -1,0 +1,74 @@
+### Ein neues Turnier anlegen
+POST http://localhost:8080/api/tournaments
+Content-Type: application/json
+
+{
+  "name": "Winter-Turnier 2026",
+  "finished": false,
+  "totalKoParticipants": 16
+}
+
+### Gruppen für ein Turnier generieren (Ersetze die 1 durch eine existierende Turnier-ID)
+POST http://localhost:8080/api/tournaments/1/generate-groups
+
+
+
+### 1. Einen echten Member erstellen
+POST http://localhost:8080/api/members
+Content-Type: application/json
+
+{
+  "name": "Ratte"
+}
+> {% client.global.set("memberId", response.body.id); %}
+
+### 2. Noch einen Member erstellen
+POST http://localhost:8080/api/members
+Content-Type: application/json
+
+{
+  "name": "Wolf"
+}
+
+### 3. Ein Turnier erstellen (zur Sicherheit ein frisches)
+POST http://localhost:8080/api/tournaments
+Content-Type: application/json
+
+{
+  "name": "Tippspiel Meisterschaft",
+  "numberOfGroups": 4,
+  "teamsPerGroup": 4
+}
+> {% client.global.set("tournamentId", response.body.id); %}
+
+### 4. Gruppen (und leere Teams!) für das Turnier generieren
+POST http://localhost:8080/api/tournaments/{{tournamentId}}/generate-groups
+
+
+### 5. Den Member in das leere Team setzen
+POST http://localhost:8080/api/teams/1/members/1
+
+
+
+### Registrieren
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "geheim123"
+}
+
+### Einloggen
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "geheim123"
+}
+
+### Geschützten Endpunkt aufrufen (z.B. Turniere oder Matches abrufen)
+GET http://localhost:8080/api/tournaments
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg4MTA3MzYxLCJleHAiOjE3ODgxOTM3NjF9.M4HA9XdMNEVBz5ZBWV3wZLIsJX2gqZVGoDVYKtEegVbNPf2LBIxgKI892u2yeqhOp0oTZXJxw9eKaUZVfOY2XQ
+
